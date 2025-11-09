@@ -1,0 +1,12 @@
+# encoding: utf-8
+# 2025 R1
+SetScriptVersion(Version="25.1.122")
+system1 = GetSystem(Name="SYS")
+system1.Copy(KeepConnections=True)
+system2 = GetSystem(Name="SYS 2")
+system2.DisplayText = "External Skin, 90 Degree Impact Test"
+model1 = system2.GetContainer(ComponentName="Model")
+model1.Edit()
+Save(Overwrite=True)
+model1.Exit()
+Save(Overwrite=True)
