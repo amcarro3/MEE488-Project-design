@@ -1,0 +1,98 @@
+# encoding: utf-8
+# 2025 R1
+SetScriptVersion(Version="25.1.122")
+template1 = GetTemplate(TemplateName="Geometry")
+system1 = template1.CreateSystem()
+geometry1 = system1.GetContainer(ComponentName="Geometry")
+geometry1.Edit()
+geometry1.Exit()
+geometry1.Edit()
+geometry1.Exit()
+system1.Delete()
+system2 = template1.CreateSystem()
+geometry2 = system2.GetContainer(ComponentName="Geometry")
+geometry2.Edit(IsDiscoveryGeometry=True)
+geometry2.Exit()
+system2.Delete()
+fileType1 = GetFileType(Name="GeometryFileType")
+ImportFile(
+    FilePath=GetAbsoluteUserPathName("ASU/MEE 488/ansys/Modeling - Nose.IGS"),
+    FileType=fileType1)
+system3 = GetSystem(Name="Geometry")
+geometry3 = system3.GetContainer(ComponentName="Geometry")
+geometry3.Edit()
+geometry3.Exit()
+template2 = GetTemplate(
+    TemplateName="Static Structural",
+    Solver="ANSYS")
+system4 = template2.CreateSystem()
+geometryComponent1 = system4.GetComponent(Name="Geometry")
+geometryComponent2 = system3.GetComponent(Name="Geometry")
+geometryComponent1.ReplaceWithShare(
+    TargetSystem=system4,
+    ComponentToShare=geometryComponent2,
+    SourceSystem=system3)
+favorites1 = EngData.LoadFavoriteItems()
+library1 = EngData.OpenLibrary(
+    Name="General Materials",
+    Source="General_Materials.xml")
+engineeringData1 = system4.GetContainer(ComponentName="Engineering Data")
+matl1 = engineeringData1.ImportMaterial(
+    Name="Aluminum Alloy",
+    Source="General_Materials.xml")
+EngData.EnableFilter(Enable=False)
+matlProp1 = matl1.GetProperty(Name="Elasticity")
+matlProp1.SetData(
+    Variables=["Young's Modulus"],
+    Values=[["69040000000 [Pa]"]])
+matlProp2 = matl1.GetProperty(Name="Density")
+matlProp2.SetData(
+    Variables=["Density"],
+    Values=[["2713 [kg m^-3]"]])
+matlProp3 = matl1.GetProperty(Name="Specific Heat")
+matlProp3.SetData(
+    Variables=["Specific Heat"],
+    Values=[["915.7 [J kg^-1 C^-1]"]])
+matlProp4 = matl1.GetProperty(Name="Coefficient of Thermal Expansion")
+matlProp4.SetData(
+    SheetName="Coefficient of Thermal Expansion",
+    SheetQualifiers={"Definition": "Secant", "Behavior": "Isotropic"},
+    Variables=["Coefficient of Thermal Expansion"],
+    Values=[["227800000 [C^-1]"]])
+matlProp5 = matl1.GetProperty(Name="Tensile Yield Strength")
+matlProp5.SetData(
+    Variables=["Tensile Yield Strength"],
+    Values=[["259200000 [Pa]"]])
+matlProp6 = matl1.GetProperty(Name="Tensile Ultimate Strength")
+matlProp6.SetData(
+    Variables=["Tensile Ultimate Strength"],
+    Values=[["313100000 [Pa]"]])
+modelComponent1 = system4.GetComponent(Name="Model")
+modelComponent1.Refresh()
+model1 = system4.GetContainer(ComponentName="Model")
+model1.Edit()
+system4.DisplayText = "Static Structura Test Al"
+system4.DisplayText = "Static Structura Test A"
+system5 = template2.CreateSystem()
+geometryComponent3 = system5.GetComponent(Name="Geometry")
+geometryComponent3.ReplaceWithShare(
+    TargetSystem=system5,
+    ComponentToShare=geometryComponent2,
+    SourceSystem=system3)
+modelComponent2 = system5.GetComponent(Name="Model")
+modelComponent2.Refresh()
+model2 = system5.GetContainer(ComponentName="Model")
+model2.Edit()
+system5.DisplayText = "Static Structura Test Bl"
+system5.DisplayText = "Static Structura Test B"
+system6 = template2.CreateSystem()
+geometryComponent4 = system6.GetComponent(Name="Geometry")
+geometryComponent4.ReplaceWithShare(
+    TargetSystem=system6,
+    ComponentToShare=geometryComponent2,
+    SourceSystem=system3)
+modelComponent3 = system6.GetComponent(Name="Model")
+modelComponent3.Refresh()
+model3 = system6.GetContainer(ComponentName="Model")
+model3.Edit()
+Save(Overwrite=True)
